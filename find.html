@@ -1,0 +1,114 @@
+<script src="simpletest.js"></script>
+<!-- The find() method returns the value of the first element in the provided array that satisfies the provided testing function. -->
+
+<script>
+  function find(array, callback, optionalThis) {
+    let findCallback = callback;
+    const length = array.length; /* get original array length in case callback adds elements to array */
+    const originalArray = array;
+
+    if (optionalThis) {
+      findCallback = callback.bind(optionalThis);
+    }
+
+    for (i = 0; i < length; i++) {
+      if (findCallback(originalArray[i], i, originalArray)) {
+        return originalArray[i];
+      }
+    }
+  }
+
+  tests({
+    'It should run the callback array.length times': function() {
+      let timesThroughCallback = 0;
+      find([1,2,3,4], function() {
+        timesThroughCallback++
+      });
+      eq(timesThroughCallback, 4)
+    },
+    'It should run the callback on all elements on the array including holes': function() {
+      let timesThroughCallback = 0;
+      find([,1,2,,3,4], function() {
+        timesThroughCallback++
+      });
+      eq(timesThroughCallback, 6)
+    },
+    'it should pass the array element as the first argument in the callback': function() {
+      find([1], function(element) {
+        eq(element, 1)
+      });
+    },
+    'it should pass the index of the array element as the second argument in the callback': function() {
+      find([1], function(element, index) {
+        eq(index, 0)
+      });
+    },
+    'it should pass the original array as the third argument in the callback': function() {
+      const originalArray = [1, 2, 3, 4]
+      find(originalArray, function(element, index, array) {
+        eq(array, originalArray)
+      });
+    },
+    'it should pass in an optional objectThis as the fouth argument in the callback': function() {
+      find([1, 2, 3], function(){
+        eq(this.description, 'optional this')
+      }, {description: 'optional this'})
+    },
+    'It should immediately return the element value if callback returns truthy': function() {
+      const found = find([1 , 2, 4], function(element) {
+        return element > 2
+      });
+      eq(found, 4)
+    },
+    'it should return undefined if callback doesnt return truthy after going through all elements': function() {
+      const notFound = find([1, 2, 3], function(element) {
+        return element > 5;
+      });
+      eq(notFound, undefined)
+    },
+    'It should not mutate the original array': function() {
+      const originalArray = [1, 2, 3];
+      const found = find(originalArray, function(element) {
+        return element > 1;
+      })
+      eq((originalArray !== found), true)
+    },
+    'it should not visit any elements added by the callback after the call to find begins': function() {
+      const originalArray = [1]
+
+      const mutatedArray = find(originalArray, function(element, index, array){
+        array.push(2);
+        return element > 1;
+      })
+      eq(mutatedArray, undefined)
+    },
+    'it should not visit any elements added by the callback after the call to find begins': function() {
+      const originalArray = [1]
+
+      const mutatedArray = find(originalArray, function(element, index, array){
+        array.push(2);
+        return element > 1;
+      })
+      eq(mutatedArray, undefined)
+    },
+    'If an existing, yet-unvisited element of the array is changed by callback, its value passed to the callback will be the value at the time find visits that elements index.': function() {
+      const originalArray = [1]
+
+      const mutatedArray = find(originalArray, function(element, index, array){
+        element += 2;
+        return element > 2;
+      })
+      eq(mutatedArray, 1)
+    },
+    'It should still visit elements that are deleted by the callback': function() {
+      const originalArray = [1, 2, 3]
+      let timesThroughCallback = 0;
+
+      const mutatedArray = find(originalArray, function(element, index, array){
+        delete array[1];
+        timesThroughCallback++
+      })
+      eq(timesThroughCallback, 3)
+    },
+  })
+</script>
