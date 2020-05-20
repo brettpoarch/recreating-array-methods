@@ -1,0 +1,178 @@
+<script src="simpletest.js"></script>
+<!-- The reduceRight() method applies a function against an accumulator and each value of the array (from right-to-left) to reduce it to a single value. -->
+<script>
+
+// prototype implementation
+  // function reduce(array, callback, startingValue) {
+  //   var resultSoFar = startingValue;
+  //   for (i = 0; i < array.length; i++) {
+  //     resultSoFar = callback(resultSoFar, array[i], i, array);
+  //   } 
+  //   return resultSoFar
+  // }
+
+// function signature:
+  // reduce(array, callback[, initialValue])
+
+// callback parameter:
+//     previousValue
+//     currentValue
+//     currentIndex
+//     array
+
+// return value:
+//   returns a single value
+
+
+
+function reduceRight(array, callback, initialValue) {
+  var startingIndex = array.length;
+  var resultSoFar = initialValue;
+
+
+  // no intialValue
+  if (arguments.length < 3) {
+
+    if (Object.keys(array).length === 0) {
+      throw new TypeError('Reduce of empty array with no initial value');
+    };
+
+    // if array has only one element, just return it 
+    if (Object.keys(array).length === 1) {
+      var onlyIndex = Object.keys(array)[0];
+      var onlyElement = array[onlyIndex];
+      return onlyElement
+    }
+
+    // checking if array[0] is a hole
+    while (startingIndex in array === false) {
+      startingIndex--;
+    }
+
+    resultSoFar = array[startingIndex];
+    startingIndex--;
+
+  // has initialValue
+  } else {
+  // is array empty
+    if (Object.keys(array).length === 0){
+      return initialValue;
+    }
+  }
+
+  for (i = startingIndex; i >= 0; i--) {
+    if (i in array) {
+      resultSoFar = callback(resultSoFar, array[i], i, array);
+    } 
+  }
+  return resultSoFar;
+};
+
+
+tests({
+  'if initialValue provided, callback should run array.length times': function() {
+    let timesThroughCallback = 0;
+
+    reduceRight([1], function() {
+      timesThroughCallback++
+    }, 0);
+
+    eq(timesThroughCallback, 1);
+
+  },
+  'if no initialValue, callback should run array.length -1 times': function() {
+    let timesThroughCallback = 0;
+
+    reduceRight([1], function() {
+      timesThroughCallback++
+    });
+
+    eq(timesThroughCallback, 0);
+
+  },
+  'if initialValue provided, previousValue should start with initialValue.': function() {
+    reduceRight([1], function(previousValue) {
+      eq(previousValue, 10);
+    }, 10);
+  },
+  'if initialValue provided, currentValue should start with the value of the last element in the array': function() {
+    reduceRight([1], function(previousValue, currentValue) {
+      eq(currentValue, 1);
+    }, 10);
+  },
+  'if initialValue provided, callback should start at index array.length': function() {
+    reduceRight([1], function(previousValue, currentValue, currentIndex) {
+      eq(currentIndex, 0);
+    }, 0); 
+  },
+
+  'if no initialValue, previousValue should start with the value of the last element in the array': function() {
+    reduceRight([1, 2], function(previousValue) {
+      eq(previousValue, 2);
+    });
+  },
+  'if no initialValue, currentValue should start with array.length - 1': function() {
+    reduceRight([1, 2], function(previousValue, currentValue) {
+      eq(currentValue, 1);
+    });
+  },
+  'if no initialValue, callback should start at index array.length - 1': function() {
+    reduceRight([1, 2], function(previousValue, currentValue, currentIndex) {
+      eq(currentIndex, 0);
+    });  
+  },
+
+  'if initialValue provided, and array is empty, return initialValue without calling callback': function() {
+    let timesThroughCallback = 0
+    const reduceResult = reduceRight([,,], function() {
+      timesThroughCallback++
+    }, 0);
+    eq(reduceResult, 0);
+    eq(timesThroughCallback, 0);
+  },
+  'if no initialValue, and array has only one element, return only element without calling callback': function() {
+    let timesThroughCallback = 0
+    const reduceResult = reduceRight([,1], function() {
+      timesThroughCallback++
+    });
+    eq(reduceResult, 1);
+    eq(timesThroughCallback, 0);
+  },
+
+  'it should actually reduce': function() {
+    const sum = reduceRight([1, 2, 3 ,4], function(previousValue, currentValue) {
+      return previousValue + currentValue;
+    });
+    eq(sum, 10)
+
+  },
+  'if initial value provided, it should exclude holes ': function() {
+    const sum = reduceRight([, 1, 2, 3 ,4], function(previousValue, currentValue) {
+      return previousValue + currentValue;
+    }, 0);
+    eq(sum, 10)
+  },
+  'if no initial value, it should exclude holes ': function() {
+    const sum = reduceRight([, , , , 1, 2, 3 ,4], function(previousValue, currentValue) {
+      return previousValue + currentValue;
+    });
+    eq(sum, 10)
+  },
+  'if array is empty, and no initialValue, throw typeError': function() {
+    let isTypeError = false;
+    try {
+      reduceRight([], function() {});
+    } catch(e) {
+      isTypeError = (e instanceof TypeError);
+    }
+    eq(isTypeError, true);
+  },
+  'it should pass array as fourth argument to callback': function() {
+    const originalArray = [1, 2]
+    reduceRight(originalArray, function(previousValue, currentIndex, currentIndex, array) {
+      eq(originalArray, array)
+    })
+  }
+
+});
+</script>
