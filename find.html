@@ -5,15 +5,15 @@
   function find(array, callback, optionalThis) {
     let findCallback = callback;
     const length = array.length; /* get original array length in case callback adds elements to array */
-    const originalArray = array;
+  
 
     if (optionalThis) {
       findCallback = callback.bind(optionalThis);
     }
 
     for (i = 0; i < length; i++) {
-      if (findCallback(originalArray[i], i, originalArray)) {
-        return originalArray[i];
+      if (findCallback(array[i], i, array)) {
+        return array[i];
       }
     }
   }
