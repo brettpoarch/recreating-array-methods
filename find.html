@@ -11,7 +11,7 @@
       findCallback = callback.bind(optionalThis);
     }
 
-    for (i = 0; i < length; i++) {
+    for (let i = 0; i < length; i++) {
       if (findCallback(array[i], i, array)) {
         return array[i];
       }
@@ -72,15 +72,6 @@
         return element > 1;
       })
       eq((originalArray !== found), true)
-    },
-    'it should not visit any elements added by the callback after the call to find begins': function() {
-      const originalArray = [1]
-
-      const mutatedArray = find(originalArray, function(element, index, array){
-        array.push(2);
-        return element > 1;
-      })
-      eq(mutatedArray, undefined)
     },
     'it should not visit any elements added by the callback after the call to find begins': function() {
       const originalArray = [1]

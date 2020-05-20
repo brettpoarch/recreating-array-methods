@@ -1,0 +1,113 @@
+<script src="simpletest.js"></script>
+<!-- The every() method tests whether all elements in the array pass the test implemented by the provided function. It returns a Boolean value. -->
+
+<script>
+  function every(array, callback, optionalThis) {
+    let everyCallback = callback;
+    const length = array.length;
+
+    if (optionalThis) {
+      everyCallback = callback.bind(optionalThis);
+    };
+
+    for (let i = 0; i < length; i++) {
+      if (i in array) {
+        if (everyCallback(array[i], i, array) === false) {
+          return false
+        };
+      };
+    };
+
+    return true
+
+  };
+
+  tests({
+    'it should run the callback array.length times': function() {
+      let timesThroughCallback = 0;
+      every([1, 2, 3], function() {
+        timesThroughCallback++;
+      });
+      eq(timesThroughCallback, 3);
+    },
+    'it should pass the element in as the first argument to the callback': function() {
+      every([1], function(element) {
+        eq(element, 1);
+      });
+    },
+    'it should pass the index in as the second argument to the callback': function() {
+      every([1], function(element, index) {
+        eq(index, 0);
+      });
+    },
+    'it should pass the originalArray in as the third argument to the callback': function() {
+      const originalArray = [1, 2, 3];
+      every(originalArray, function(element, index, array) {
+        eq(originalArray, array);
+      });
+    },
+    'it should pass in an optional this argument as the fourth element to the callback': function() {
+      every([1], function() {
+        eq(this.description, 'optional this');
+      }, {description: 'optional this'});
+    },
+    'it should return true if the callback() returns truthy for all elements of the array ': function() {
+      const allQualify = every([1], function(element) {
+        return element > 2;
+      });
+      eq(allQualify, false);
+    },
+    'it should return false if the callback() returns falsey for any element of the array': function() {
+      const notAllQualify= every([1], function(element) {
+        return element > 0;
+      });
+      eq(notAllQualify, true);
+    },
+    'it should return true if array.length === 0': function() {
+      const emptyIsTruty = every([], function() {});
+      eq(emptyIsTruty, true);
+    },
+    'it should not mutate the originalArray': function() {
+      const originalArray = [1, 2, 3];
+
+      const mutatedArray = every(originalArray, function(element, index, array) {
+        array.pop();
+      });
+      eq(originalArray !== mutatedArray, true);
+    },
+    'it should not visit any elements added by the callback after the call to find begins': function() {
+      let timesThroughCallback = 0;
+
+      every([1], function(element, index, array) {
+        array.push(2);
+        timesThroughCallback++;
+      });
+      eq(timesThroughCallback, 1);
+    },
+    'If an existing, yet-unvisited element of the array is changed by callback, its value passed to the callback will be the value at the time find visits that elements index.': function() {
+      const mutatedArray = every([1], function(element) {
+        element++;
+        return element > 1;
+      });
+      eq(mutatedArray, true);
+    },
+    'it should not run the callback on holes': function() {
+      let timesThroughCallback = 0;
+
+      every([,1,, 2, 3, 4], function() {
+        timesThroughCallback++;
+      });
+      eq(timesThroughCallback, 4);
+
+    },
+    'it should not run the callback on deleted elements': function() {
+      let timesThroughCallback = 0;
+
+      every([1, 2, 3, 4], function(element, index, array) {
+        delete array[1]
+        timesThroughCallback++;
+      });
+      eq(timesThroughCallback, 3);
+    }
+  })
+</script>
