@@ -1,0 +1,121 @@
+<script src="simpletest.js"></script>
+<!-- The some() method tests whether at least one element in the array passes the test implemented by the provided function. It returns a Boolean value. -->
+
+<script>
+  function some(array, callback, optionalThis) {
+  	let someCallback = callback;
+  	const length = array.length;
+
+  	if (optionalThis) {
+  		someCallback = callback.bind(optionalThis);
+  	};
+
+  	for (let i = 0; i < length; i++) {
+  		if(i in array) {
+	  		if (someCallback(array[i], i, array)) {
+	  			return true;
+  			};
+  		};
+  	};
+  	return false;
+  };
+
+  tests({
+    'it should run the callback array.length times': function() {
+    	let timesThroughCallback = 0;
+
+      some([1], function() {
+      	timesThroughCallback++;
+      });
+      eq(timesThroughCallback, 1);
+    },
+
+    'it should pass the element in as the first argument to the callback': function() {
+      some([1], function(element) {
+      	eq(element, 1);
+      });
+    },
+    'it should pass the index in as the second argument to the callback': function() {
+      some([1], function(element, index) {
+      	eq(index, 0);
+      });
+    },
+    'it should pass the originalArray in as the third argument to the callback': function() {
+      const originalArray = [1, 2, 3];
+
+      some(originalArray, function(element, index, array) {
+      	eq(array, originalArray);
+      });
+    },
+    'it should pass in an optional this argument as the fourth element to the callback': function() {
+     	some([], function() {
+      	eq(this.description, 'optional this')
+      }, {description: 'optional this'})
+    },
+    'it should immediately return true if the callback returns a truthy value on any element': function() {
+	  	let timesThroughCallback = 0;
+
+	    const trueStatement = some([1, 2], function(element) {
+	     timesThroughCallback++
+	     return element > 0;
+	    });
+
+	    eq(trueStatement, true)
+	    eq(timesThroughCallback, 1)
+    },
+    'it should return false if the callback does not return a truthy value on any element': function() {
+    	const falseStatement = some([1], function(element) {
+    		return element < 1;
+    	});
+    	eq(falseStatement, false);
+    },
+    'it should return false if array.length === 0': function() {
+      const emptyArary = some([], function() {
+      	return;
+      });
+      eq(emptyArary, false);
+    },
+    'it should not mutate the originalArray': function() {
+    	originalArray = [1, 2];
+
+    	const mutatedArray = some(originalArray, function(element, index, array) {
+    		array.pop();
+    		return array;
+    	})
+    	eq(originalArray !== mutatedArray, true)
+    },
+    'it should not visit any elements added by the callback after the call to some begins': function() {
+    	let timesThroughCallback = 0;
+
+    	some([1], function(element, index, array) {
+    		array.push(2);
+    		timesThroughCallback ++;
+    	});
+    	eq(timesThroughCallback, 1)
+    },
+    'If an existing, yet-unvisited element of the array is changed by callback, its value passed to the callback will be the value at the time some visits that elements index.': function() {
+    	const updatedElement = some([1], function(element) {
+    		element++;
+    		return element === 2;
+    	});
+    	eq(updatedElement, true);
+    },
+    'it should not run the callback on holes': function() {
+    	let timesThroughCallback = 0;
+
+      some([1,, 2,], function() {
+      	timesThroughCallback++;
+      })
+      eq(timesThroughCallback, 2)
+    },
+    'it should not run the callback on deleted elements': function() {
+      let timesThroughCallback = 0;
+
+      some([1, 2], function(element, index, array) {
+      	delete array[1];
+      	timesThroughCallback++;
+      });
+      eq(timesThroughCallback, 1)
+    },
+  })
+</script>

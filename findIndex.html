@@ -72,7 +72,7 @@
       });
       eq(indexNotFound, -1);
     },
-    'it should not visit any elements added by the callback after the call to find begins': function() {
+    'it should not visit any elements added by the callback after the call to findIndex begins': function() {
       let timesThroughCallback = 0;
       const originalArray = [1]
       findIndex(originalArray, function(element, index, array) {
@@ -81,7 +81,7 @@
       })
       eq(timesThroughCallback, 1)
     },
-    'If an existing, yet-unvisited element of the array is changed by callback, its value passed to the callback will be the value at the time find visits that elements index.': function() {
+    'If an existing, yet-unvisited element of the array is changed by callback, its value passed to the callback will be the value at the time findIndex visits that elements index.': function() {
       const originalArray = [1];
       const findMutatedElement = findIndex(originalArray, function(element) {
         element += 2;

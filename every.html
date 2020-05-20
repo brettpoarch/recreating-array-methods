@@ -75,7 +75,7 @@
       });
       eq(originalArray !== mutatedArray, true);
     },
-    'it should not visit any elements added by the callback after the call to find begins': function() {
+    'it should not visit any elements added by the callback after the call to every begins': function() {
       let timesThroughCallback = 0;
 
       every([1], function(element, index, array) {
@@ -84,7 +84,7 @@
       });
       eq(timesThroughCallback, 1);
     },
-    'If an existing, yet-unvisited element of the array is changed by callback, its value passed to the callback will be the value at the time find visits that elements index.': function() {
+    'If an existing, yet-unvisited element of the array is changed by callback, its value passed to the callback will be the value at the time every visits that elements index.': function() {
       const mutatedArray = every([1], function(element) {
         element++;
         return element > 1;
