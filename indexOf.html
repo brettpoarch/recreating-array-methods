@@ -1,0 +1,112 @@
+<script src="simpletest.js"></script>
+<!-- The indexOf() method returns the first index at which a given element can be found in the array, or -1 if it is not present. -->
+
+<script>
+  function indexOf(array, searchElement, optionalStartingIndex) {
+  	let startingIndex = 0;
+
+  	if (optionalStartingIndex) {
+  		if (optionalStartingIndex < 0) {
+  			startingIndex = array.length + optionalStartingIndex;
+  			if (startingIndex < 0) {
+  				startingIndex = 0;
+  			}
+  		} else {
+  			startingIndex = optionalStartingIndex;
+  		}
+  	}
+
+  	for (i = startingIndex; i < array.length; i++) {
+  		if (searchElement === array[i]) {
+  			return i
+  		}
+  	}
+  	return -1
+  	
+  };
+
+  tests({
+  	'it should return the first index where the searchElement can be found in the array': function() {
+  		const numbers = [1, 2, 3, 4, 5];
+
+  		const findTwo = indexOf(numbers, 2)
+
+  		eq(findTwo, 1)
+  	},
+  	'it should return -1 if the searchElement is not found in the array': function() {
+  		const numbers = [1, 2, 3, 4 ,5];
+
+  		const cantFindSix = indexOf(numbers, 6);
+
+  		eq(cantFindSix, -1)
+  	},
+  	'it should start the search at array[0] if no optionalStartingIndex provided': function() {
+  		const numbers = [1, 2, 3, 4 ,5];
+
+  		const findIndexZero = indexOf(numbers, 1);
+
+  		eq(findIndexZero, 0)
+  	},
+  	'it should start the search at the optionalStartingIndex if one is provided': function() {
+  		const numbers = [1, 2, 3, 4 ,5];
+
+  		const skipIndexZero = indexOf(numbers, 1, 1)
+
+  		eq(skipIndexZero, -1)
+  	},
+  	'if the optionalStartingIndex provided is greater than array.length -1 is returned': function() {
+  		const numbers = [1, 2, 3, 4 ,5];
+
+  		const notSearched = indexOf(numbers, 5, 6);
+
+  		eq(notSearched, -1)
+
+  	},
+  	'if the optionalStartingIndex provided is equal to array.length -1 is returned': function() {
+  		const numbers = [1, 2, 3, 4 ,5];
+
+  		const notSearched = indexOf(numbers, 5, 5);
+
+  		eq(notSearched, -1);
+
+  	},
+  	'if the optionalStartingIndex is a negative number the index will count back from the end of the array': function() {
+  		
+  		const numbers = [1, 2, 3, 4 ,5];
+
+  		const indexCountBackFound = indexOf(numbers, 5, -1)
+  		const indexCountBackNotFound = indexOf(numbers, 1, -1)
+
+  		eq(indexCountBackFound, 4)
+  		eq(indexCountBackNotFound, -1)
+  	},
+  	'it should search the array from beggining to end': function() {
+  		const numbers = [1, 2, 3, 4 ,5];
+
+  		const countsForwardFound = indexOf(numbers, 5)
+  		const countsForwardNotFound = indexOf(numbers, 1, 2)
+
+  		eq(countsForwardFound, 4)
+  		eq(countsForwardNotFound, -1)
+  	},
+  	'it should search the array from beggining to end even if the optionalStartingIndex is a negative number': function() {
+  		const numbers = [1, 2, 3, 4 ,5];
+
+  		const countsForwardWithNegativeStartingIndexFound = indexOf(numbers, 5, -1)
+  		const countsForwardWithNegativeStartingIndexNotFound = indexOf(numbers, 1, -1)
+
+  		eq(countsForwardWithNegativeStartingIndexFound, 4)
+  		eq(countsForwardWithNegativeStartingIndexNotFound, -1)
+  	},
+  	'it should compare using strict equality (===)': function() {
+  		const numbers = [1, 2, 3, 4, 5];
+
+  		const strictEqualFound = indexOf(numbers, 1);
+  		const strictEqualNotFound = indexOf(numbers, "1");
+
+  		eq(strictEqualFound, 0)
+  		eq(strictEqualNotFound, -1)
+  	}
+
+  })
+</script>
