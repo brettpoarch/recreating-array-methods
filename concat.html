@@ -1,0 +1,127 @@
+<script src="simpletest.js"></script>
+<!-- The concat() method is used to merge two or more arrays. This method does not change the existing arrays, but instead returns a new array. -->
+
+<script>
+  function concat(array1, value) {
+  	let newArray = [];
+
+  	for (let i = 0; i < array1.length; i++) {
+  		newArray.push(array1[i]);
+  	}
+  	
+  	if (arguments.length > 1) {
+  		for (j = 1; j < arguments.length; j++) {
+  			if (Array.isArray(arguments[j]) === false) {
+  				newArray.push(arguments[j])
+  			} else {
+  				for (k = 0; k < arguments[j].length; k++) {
+  					newArray.push(arguments[j][k]);
+  				}
+  			}
+  		}
+  	}	
+
+  	return newArray;
+  };
+
+  tests({
+  	'it should create a new array': function() {
+  		const array1 = [1,2];
+
+  		const newArray = concat(array1);
+  		eq(newArray !== array1, true)
+  	},
+  	'it should take an individual value': function() {
+  		const array1 = [1, 2];
+  		const value = 3;
+
+  		const combinedArray = concat(array1, value)
+  		eq(combinedArray.length === 3, true)
+  	},
+  	'it should take multiple individual values': function() {
+  		const array1 = [1];
+  		const value1 = 2;
+  		const value2 = 3;
+
+  		const combinedArray = concat(array1, value1, value2);
+  		eq(combinedArray.length === 3, true);
+  	},
+    'it should combine multiple arrays': function() {
+    	const array1 = [1, 2];
+    	const array2 = [3, 4];
+    	const array3 = [5, 6];
+
+    	const combinedArray = concat(array1, array2, array3);
+    	eq(combinedArray.length === 6, true);
+    	eq(combinedArray[2] ===3, true);
+    },
+    'it should take nested arrays nested': function() {
+    	const array1 = [1, [2]];
+    	const array2 = [3, 4];
+
+    	const keepNested = concat(array1, array2);
+    	eq(keepNested[1][0] === 2, true);
+    },
+    'it should take multiple nested arrays': function() {
+    	const array1 = [1, [2]];
+    	const array2 = [[3], 4];
+
+    	const combineNestedArrays = concat(array1, array2);
+    	eq(combineNestedArrays[1][0] === 2, true);
+    	eq(combineNestedArrays[2][0] === 3, true);
+    	eq(combineNestedArrays.length === 4, true);
+    },
+    'it should take multiple individual and multiple array parameters': function() {
+    	const array1 = [1];
+    	const array2 = [2];
+    	value1 = 3;
+    	value2 = 4;
+
+    	const combinedArray = concat(array1, array2, value1, value2);
+    	eq(combinedArray.length === 4, true)
+    },
+    'if the original array is changed after concat() it should not change the new array': function() {
+    	let array1 = [1];
+
+    	const newArray = concat(array1);
+
+    	array1 = [4];
+
+    	eq(newArray[0] === 1, true);
+    	eq(newArray[0] !== 4, true);
+    	eq(newArray.length === 1, true);
+    },
+    'if the new array is changed it should not change the original array': function() {
+    	let array1 = [1];
+
+    	let newArray = concat(array1);
+
+    	newArray = [4];
+
+    	eq(array1[0] === 1, true);
+    	eq(array1[0] !== 4, true);
+    	eq(array1.length === 1, true);
+    },
+    'if a referenced object is modified on the original array, the new array is also modified': function() {
+    	let array1 = [{a: 1, b: 2, c: 3 }];
+    	let array2 = [{d: 4, e: 5, f: 6 }];
+
+    	let newArray = concat(array1, array2);
+
+    	array1[0].a = 7;
+
+    	eq(newArray[0].a === 7, true)
+    },
+    'if a referenced object is modified on the new array, the original array is also modified': function() {
+    	let array1 = [{a: 1, b: 2, c: 3 }];
+    	let array2 = [{d: 4, e: 5, f: 6 }];
+
+    	let newArray = concat(array1, array2);
+
+    	newArray[0].a = 7;
+
+    	eq(array1[0].a === 7, true)
+    } 
+
+  })
+</script>
