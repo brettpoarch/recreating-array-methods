@@ -1,0 +1,122 @@
+<script src="simpletest.js"></script>
+<!--The includes() method determines whether an array includes a certain value among its entries, returning true or false as appropriate. -->
+
+<script>
+  function includes(array, searchElement, optionalStartingIndex) {
+  	let startingIndex = 0;
+
+  	if (optionalStartingIndex) {
+  		if (optionalStartingIndex < 0) {
+  			startingIndex = array.length + optionalStartingIndex;
+  			if (startingIndex < 0) {
+  				startingIndex = 0;
+  			}
+  		} else {
+  			startingIndex = optionalStartingIndex;
+  		}
+  	}
+
+  	for (i = startingIndex; i < array.length; i++) {
+  		if (searchElement === array[i]) {
+  			return true
+  		}
+  	}
+  	return false
+  	
+  };
+
+  tests({
+  	'it should return true if the searchElement is found in the array': function() {
+      const numbers = [1, 2, 3, 4, 5];
+
+      const findElement = includes(numbers, 2);
+
+      eq(findElement, true);
+  	},
+  	'it should return false if the searchElement is not found in the array': function() {
+  		const numbers = [1, 2, 3, 4 ,5];
+
+  		const cantFindElement = includes(numbers, 6);
+
+  		eq(cantFindElement, false);
+  	},
+  	'it should start the search at array[0] if no optionalStartingIndex provided': function() {
+  		const numbers = [1, 2, 3, 4 ,5];
+
+  		const findIndexZero = includes(numbers, 1);
+
+  		eq(findIndexZero, true);
+  	},
+  	'it should start the search at the optionalStartingIndex if one is provided': function() {
+  		const numbers = [1, 2, 3, 4 ,5];
+
+  		const skipIndexZero = includes(numbers, 1, 1);
+
+  		eq(skipIndexZero, false);
+  	},
+  	'if the optionalStartingIndex provided is greater than array.length false is returned': function() {
+  		const numbers = [1, 2, 3, 4 ,5];
+
+  		const notSearched = includes(numbers, 5, 6);
+
+  		eq(notSearched, false);
+
+  	},
+  	'if the optionalStartingIndex provided is equal to array.length false is returned': function() {
+  		const numbers = [1, 2, 3, 4 ,5];
+
+  		const notSearched = includes(numbers, 5, 5);
+
+  		eq(notSearched, false);
+
+  	},
+  	'if the optionalStartingIndex is a negative number the index will count back from the end of the array': function() {
+  		const numbers = [1, 2, 3, 4 ,5];
+
+  		const indexCountBackFound = includes(numbers, 5, -1);
+  		const indexCountBackNotFound = includes(numbers, 1, -1);
+
+  		eq(indexCountBackFound, true);
+  		eq(indexCountBackNotFound, false);
+  	},
+  	'it should compare using strict equality (===)': function() {
+  		const numbers = [1, 2, 3, 4, 5];
+
+  		const strictEqualFound = includes(numbers, 1);
+  		const strictEqualNotFound = includes(numbers, "1");
+
+  		eq(strictEqualFound, true);
+  		eq(strictEqualNotFound, false);
+  	},
+    'it should be case sensitive when comparing characters': function() {
+      const letters = ["a", "B"];
+
+      const caseSensitive = includes(letters, "A");
+      const caseSensitiveFound = includes(letters, "a");
+
+      eq(caseSensitive, false);
+      eq(caseSensitiveFound, true);
+    },
+    'it should consider 0 and +0 as equal': function() {
+      const numbers = [0];
+
+      const compare = includes(numbers, +0);
+
+      eq(compare, true);
+    },
+    'it should consider 0 and -0 as equal': function() {
+      const numbers = [0];
+
+      const compare = includes(numbers, -0);
+
+      eq(compare, true);
+    },
+    'it should not consider 0 and false as equal': function() {
+      const numbers = [0];
+
+      const compare = includes(numbers, false);
+
+      eq(compare, false);
+    }
+  })
+</script>
