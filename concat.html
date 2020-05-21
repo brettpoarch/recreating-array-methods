@@ -5,6 +5,11 @@
   function concat(array1, value) {
   	let newArray = [];
 
+
+    if (Array.isArray(array1) === false) {
+      throw new SyntaxError('Unexpected number');
+    };
+
   	for (let i = 0; i < array1.length; i++) {
   		newArray.push(array1[i]);
   	}
@@ -45,6 +50,7 @@
 
   		const combinedArray = concat(array1, value1, value2);
   		eq(combinedArray.length === 3, true);
+  		
   	},
     'it should combine multiple arrays': function() {
     	const array1 = [1, 2];
@@ -121,7 +127,15 @@
     	newArray[0].a = 7;
 
     	eq(array1[0].a === 7, true)
-    } 
-
+    },
+    'it should throw a SyntaxError if an array is not provided as the first argument': function() {
+    	let isSytaxError = false;
+	    try {
+	      concat(1)
+	    } catch(e) {
+	      isSyntaxError = (e instanceof SyntaxError);
+	    }
+	    eq(isSyntaxError, true);
+	    }
   })
 </script>
