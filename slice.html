@@ -1,0 +1,151 @@
+<script src="simpletest.js"></script>
+<!-- The slice() method returns a shallow copy of a portion of an array into a new array object selected from begin to end (end not included) where begin and end represent the index of items in that array. The original array will not be modified. -->
+
+<script>
+  function slice(array, begin, optionalEnd) {
+    let copiedArray = [];
+    let startingIndex = 0;
+    let end = array.length;
+
+    if (begin) {
+      if (begin < 0) {
+        begin = array.length + begin;
+      }
+      startingIndex = begin;
+    };
+
+    if (optionalEnd) {
+      if (optionalEnd < 0) {
+        optionalEnd = array.length + optionalEnd;
+      };
+
+      if (optionalEnd > array.length) {
+        optionalEnd = array.length;
+      };
+
+      end = optionalEnd;
+    };
+
+    for (let i = startingIndex; i < end; i++) {
+      copiedArray.push(array[i]);
+    };
+
+    return copiedArray; 	
+  };
+
+  tests({
+  	'it should return a new array': function() {
+      const originalArray = [];
+
+      const newArray = slice(originalArray)
+
+      eq(newArray !== originalArray, true) 
+  	},
+    'it should return a copy of an array': function() {
+      const originalArray = [1];
+
+      const newArray = slice(originalArray);
+
+      eq(newArray[0] === 1, true)
+    },
+    'it should make a copy starting at the begin index provided': function() {
+      const originalArray = [1, 2];
+
+      const newArray = slice(originalArray, 1);
+
+      eq(newArray[0] === 2, true);
+      eq(newArray.length === 1, true);
+    },
+    'it should make a copy starting at array[0] if no begin is undefined': function() {
+      const originalArray = [1, 2];
+
+      const newArray = slice(originalArray);
+
+      eq(newArray[0] === 1, true);
+      eq(newArray.length === 2, true);
+    },
+    'it should return an empty array if begin is greater than array.length': function() {
+      const originalArray = [1, 2];
+
+      const newArray = slice(originalArray, 3);
+
+      eq(newArray.length === 0, true);
+    },
+    'if a negative number is provided as begin it should count back from the end of the array begin times': function() {
+      const originalArray = [1, 2];
+
+      const newArray = slice(originalArray, -2);
+
+      eq(newArray[0] === 1, true)
+      eq(newArray.length === 2, true);
+    },
+    'if an optionalEnd value is provided it should copy up to but exclude that index from the array': function() {
+      const originalArray = [1, 2, 3, 4, 5];
+
+      const newArray = slice(originalArray, 1, 4);
+
+      eq(newArray.length, 3);
+    },
+    'if a negative number is provided as optionalEnd it will count back from the end of the array optionalEnd times and stop there': function() {
+      const originalArray = [1, 2, 3, 4, 5];
+
+      const newArray = slice(originalArray, 1, -1);
+
+      eq(newArray.length, 3);
+    },
+    'if optionalEnd is not provided it should copy through the end of the array': function() {
+      const originalArray = [1, 2, 3, 4, 5];
+
+      const newArray = slice(originalArray, 1);
+      
+      eq(newArray.length, 4);
+    },
+    'if optionalEnd is greater than array.length it will copy through the end of the array': function() {
+      const originalArray = [1, 2, 3, 4, 5];
+
+      const newArray = slice(originalArray, 1, 7);
+      
+      eq(newArray.length, 4);
+    },
+    'if changes are made to the originalArray after slice() it should not change the copied array': function() {
+      let originalArray = [1];
+
+      let newArray = slice(originalArray);
+
+      originalArray.push(2)
+      
+      eq(originalArray.length, 2);
+      eq(newArray.length, 1);
+    },
+    'if changes are made to the copied array after slice() it should not change the originalArray': function() {
+      let originalArray = [1];
+
+      let newArray = slice(originalArray);
+
+      newArray.push(2)
+      
+      eq(originalArray.length, 1);
+      eq(newArray.length, 2);
+    },
+    'if an Object is copied, changes to the originalArray Object should change the copied array Object': function() {
+      let originalArray = [{a: 0, b: 1}];
+
+      let newArray = slice(originalArray);
+
+      originalArray[0].a = 7;
+
+      eq(originalArray[0].a === 7, true)
+      eq(newArray[0].a === 7, true)
+    },
+    'if an Object is copied, changes to the copied array Object should change the originalArray Object': function() {
+      let originalArray = [{a: 0, b: 1}];
+
+      let newArray = slice(originalArray);
+
+      newArray[0].a = 7;
+
+      eq(originalArray[0].a === 7, true)
+      eq(newArray[0].a === 7, true)
+    }
+  })
+</script>

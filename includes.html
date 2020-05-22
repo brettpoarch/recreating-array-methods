@@ -17,7 +17,7 @@
   	}
 
   	for (i = startingIndex; i < array.length; i++) {
-      if (searchElement !== searchElement) {
+      if (searchElement !== searchElement) { /* checking for NaN */
         if (array[i] !== array[i]){
           return true
         }
@@ -124,7 +124,6 @@
       eq(compare, false);
     },
     'it should compare NaN': function() {
-      debugger;
       const numbers = [NaN];
 
       const findNaN = includes(numbers, NaN);
