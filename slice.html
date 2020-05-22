@@ -7,6 +7,10 @@
     let startingIndex = 0;
     let end = array.length;
 
+    if (!Array.isArray(array)) {
+      throw new SyntaxError('Invalid or unexpected token');
+    };
+
     if (begin) {
       if (begin < 0) {
         begin = array.length + begin;
@@ -146,6 +150,15 @@
 
       eq(originalArray[0].a === 7, true)
       eq(newArray[0].a === 7, true)
+    },
+    'it should throw a SyntaxError if an array is not provided as the first argument': function() {
+      let isSytaxError = false;
+      try {
+        slice(1)
+      } catch(e) {
+        isSyntaxError = (e instanceof SyntaxError);
+      }
+      eq(isSyntaxError, true);
     }
   })
 </script>

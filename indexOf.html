@@ -5,6 +5,10 @@
   function indexOf(array, searchElement, optionalStartingIndex) {
   	let startingIndex = 0;
 
+    if (!Array.isArray(array)) {
+      throw new SyntaxError('Invalid or unexpected token');
+    };
+
   	if (optionalStartingIndex) {
   		if (optionalStartingIndex < 0) {
   			startingIndex = array.length + optionalStartingIndex;
@@ -106,7 +110,15 @@
 
   		eq(strictEqualFound, 0)
   		eq(strictEqualNotFound, -1)
-  	}
-
+  	},
+    'it should throw a SyntaxError if an array is not provided as the first argument': function() {
+      let isSytaxError = false;
+      try {
+        indexOf(1)
+      } catch(e) {
+        isSyntaxError = (e instanceof SyntaxError);
+      }
+      eq(isSyntaxError, true);
+    }
   })
 </script>

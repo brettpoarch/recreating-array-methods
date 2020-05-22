@@ -6,6 +6,10 @@
     let everyCallback = callback;
     const length = array.length;
 
+    if (!Array.isArray(array)) {
+      throw new SyntaxError('Invalid or unexpected token');
+    };
+
     if (optionalThis) {
       everyCallback = callback.bind(optionalThis);
     };
@@ -108,6 +112,15 @@
         timesThroughCallback++;
       });
       eq(timesThroughCallback, 3);
+    },
+    'it should throw a SyntaxError if an array is not provided as the first argument': function() {
+      let isSytaxError = false;
+      try {
+        every(1, function() {})
+      } catch(e) {
+        isSyntaxError = (e instanceof SyntaxError);
+      }
+      eq(isSyntaxError, true);
     }
   })
 </script>

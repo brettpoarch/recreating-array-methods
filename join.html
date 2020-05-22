@@ -6,7 +6,7 @@
     let joinString = '';
     let seperator = ','
 
-    if (Array.isArray(array) === false) {
+    if (!Array.isArray(array)) {
       throw new SyntaxError('Invalid or unexpected token');
     };
 

@@ -2,9 +2,13 @@
 <!-- The lastIndexOf() method returns the last index at which a given element can be found in the array, or -1 if it is not present. The array is searched backwards, starting at fromIndex. -->
 
 <script>
-  function indexOf(array, searchElement, optionalStartingIndex) {
+  function lastIndexOf(array, searchElement, optionalStartingIndex) {
   	let startingIndex = array.length - 1;
   	let found = -1;
+
+    if (!Array.isArray(array)) {
+      throw new SyntaxError('Invalid or unexpected token');
+    };
 
   	if (optionalStartingIndex) {
   		if (optionalStartingIndex >= array.length) {
@@ -34,7 +38,7 @@
   	'it should return the index where the searchElement can be found in the array': function() {
   		const numbers = [1, 2, 3, 4, 5];
 
-  		const findTwo = indexOf(numbers, 2)
+  		const findTwo = lastIndexOf(numbers, 2)
 
   		eq(findTwo, 1)
   	},
@@ -42,50 +46,50 @@
   		
   		const numbers = [1, 2, 3, 4 ,5];
 
-  		const cantFindSix = indexOf(numbers, 6);
+  		const cantFindSix = lastIndexOf(numbers, 6);
 
   		eq(cantFindSix, -1)
   	},
   	'it should return the last index where the searchElement can be found in the array': function() {
   		const numbers = [5, 1, 2, 3, 4, 5];
 
-  		const findFive = indexOf(numbers, 5)
+  		const findFive = lastIndexOf(numbers, 5)
 
   		eq(findFive, 0)
   	},
   	'it should start the search at array[array.length - 1] if no optionalStartingIndex provided': function() {
   		const numbers = [1, 2, 3, 4 ,5];
 
-  		const findStartingIndex = indexOf(numbers, 5);
+  		const findStartingIndex = lastIndexOf(numbers, 5);
 
   		eq(findStartingIndex, 4)
   	},
   	'it should start the search at the optionalStartingIndex if one is provided': function() {
   		const numbers = [1, 2, 3, 4 ,5];
 
-  		const skipElementsBehindStartingIndex = indexOf(numbers, 5, 3)
+  		const skipElementsBehindStartingIndex = lastIndexOf(numbers, 5, 3)
 
   		eq(skipElementsBehindStartingIndex, -1)
   	},
   	'if the optionalStartingIndex provided is greater than array.length the whole array will be searched': function() {
   		const numbers = [1, 2, 3, 4 ,5];
 
-  		const searchWholeArray = indexOf(numbers, 5, numbers.length + 1);
+  		const searchWholeArray = lastIndexOf(numbers, 5, numbers.length + 1);
 
   		eq(searchWholeArray, 4)
   	},
   	'if the optionalStartingIndex provided is equal to array.length the whole array will be searched': function() {
   		const numbers = [1, 2, 3, 4 ,5];
 
-  		const searchWholeArray = indexOf(numbers, 1, numbers.length);
+  		const searchWholeArray = lastIndexOf(numbers, 1, numbers.length);
 
   		eq(searchWholeArray, 0)
   	},
   	'if the optionalStartingIndex is a negative number the index will count back from the end of the array': function() {
   		const numbers = [1, 2, 3, 4 ,5];
 
-  		const indexCountBackFound = indexOf(numbers, 1, -1)
-  		const indexCountBackNotFound = indexOf(numbers, 5, -1)
+  		const indexCountBackFound = lastIndexOf(numbers, 1, -1)
+  		const indexCountBackNotFound = lastIndexOf(numbers, 5, -1)
 
   		eq(indexCountBackFound, 0)
   		eq(indexCountBackNotFound, -1)
@@ -93,19 +97,27 @@
   	'if the optional starting negative number is greater than array.length - 1 it should return -1': function() {
   		const numbers = [1, 2, 3, 4, 5];
 
-  		const negativeGreaterThanArrayLength = indexOf(numbers, -7);
+  		const negativeGreaterThanArrayLength = lastIndexOf(numbers, -7);
 
   		eq(negativeGreaterThanArrayLength, -1)
   	},
   	'it should compare using strict equality (===)': function() {
   		const numbers = [1, 2, 3, 4, 5];
 
-  		const strictEqualFound = indexOf(numbers, 1);
-  		const strictEqualNotFound = indexOf(numbers, "1");
+  		const strictEqualFound = lastIndexOf(numbers, 1);
+  		const strictEqualNotFound = lastIndexOf(numbers, "1");
 
   		eq(strictEqualFound, 0)
   		eq(strictEqualNotFound, -1)
-  	}
-
+  	},
+    'it should throw a SyntaxError if an array is not provided as the first argument': function() {
+      let isSytaxError = false;
+      try {
+        lastIndexOf(1)
+      } catch(e) {
+        isSyntaxError = (e instanceof SyntaxError);
+      }
+      eq(isSyntaxError, true);
+    }
   })
 </script>
