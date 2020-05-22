@@ -1,0 +1,99 @@
+<script src="simpletest.js"></script>
+<!-- The push() method adds one or more elements to the end of an array and returns the new length of the array. -->
+
+<script>
+  function push(array, newElement) {
+
+    if (!Array.isArray(array)) {
+      throw new SyntaxError('Invalid or unexpected token');
+    };
+
+    if (arguments.length > 1) {
+      for (let i = 1; i < arguments.length; i++){
+        if (Array.isArray(arguments[i])) {
+          for (let j = 0; j < arguments[i].length; j++) {
+            array[array.length] = arguments[i][j];
+          }
+        } else {
+          array[array.length] = arguments[i];
+        }
+      }
+    }
+   
+
+
+    return array.length
+    
+  };
+
+  tests({
+  	'it should append a new element to an existing array': function() {
+      let array = [1];
+
+      push(array, 2)
+
+      eq(array[1], 2) 
+  	},
+    'it should be able to append multiple elelments to an existing array': function() {
+      let array = [1];
+
+      push(array, 2, 3, 4)
+
+      eq(array[3], 4)
+      eq(array.length, 4) 
+    },
+    'it should return the new length of the array': function() {
+      let array = [1];
+
+      const length = push(array, 2)
+ 
+      eq(length, 2)
+    },
+    'it should return the new length of the array when multiple elements are added': function() {
+      let array = [1];
+
+      const length = push(array, 2, 3, 4)
+
+      eq(length, 4)
+    },
+    'it should be able to append a new array to an existing array': function() {
+      let array = [1];
+
+      const length = push(array, [2, 3, 4]);
+
+      eq(length, 4);
+    },
+    'it should be able to append a new array to an existing array as a secondary argument': function() {
+      let array = [1];
+
+      const length = push(array, 2, [3, 4], 5);
+
+      eq(length, 5);
+    },
+    'it should be able to append and object to an array': function() {
+      let array = [1];
+
+      const length = push(array, {a: 1});
+
+      eq(array[1].a, 1)
+      eq(length, 2);
+    },
+    'it should be able to append and object to an array as a secondary argument': function() {
+      let array = [1];
+
+      const length = push(array, 2, {a: 1});
+
+      eq(array[2].a, 1)
+      eq(length, 3);
+    },
+    'it should throw a SyntaxError if an array is not provided as the first argument': function() {
+      let isSytaxError = false;
+      try {
+        push(1)
+      } catch(e) {
+        isSyntaxError = (e instanceof SyntaxError);
+      }
+      eq(isSyntaxError, true);
+    }
+  })
+</script>
