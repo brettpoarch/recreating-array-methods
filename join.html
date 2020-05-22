@@ -1,0 +1,98 @@
+<script src="simpletest.js"></script>
+<!-- The join() method creates and returns a new string by concatenating all of the elements in an array (or an array-like object), separated by commas or a specified separator string. If the array has only one item, then that item will be returned without using the separator. -->
+
+<script>
+  function join(array, optionalSeperator) {
+    let joinString = '';
+    let seperator = ','
+
+    if (Array.isArray(array) === false) {
+      throw new SyntaxError('Invalid or unexpected token');
+    };
+
+    if (optionalSeperator || typeof optionalSeperator === "string") {
+      seperator = optionalSeperator;
+    }
+
+    for (let i = 0; i < array.length; i++) {
+      if (array[i] === undefined || array[i] === null){
+        array[i] = '';
+      }
+
+      if (i > 0) {
+        joinString += seperator + array[i];
+      } else {
+        joinString += array[i];
+      }
+    }
+
+    return joinString;
+    
+  };
+
+  tests({
+  	'it should create a string': function() {
+      const isString = join([]);
+
+      eq(typeof isString, "string");
+  	},
+    'it should join all elements of an array to a string': function() {
+      const originalArray = ["hello", "world"];
+
+      const makeString = join(originalArray);
+
+      eq(makeString, "hello,world");
+    },
+    'if an optionalSeperator is provided it is used to seperate the elements of the array': function() {
+      const originalArray = ["hello", "world"];
+
+      const makeString = join(originalArray, ('-'));
+
+      eq(makeString, "hello-world");
+    },
+    'if the optionalSeperator is an empty string all array elements are joined without any characters between them': function() {
+      const originalArray = ["hello", "world"];
+
+      const makeString = join(originalArray, (''));
+
+      eq(makeString, "helloworld");
+    },
+    'if no optionalSeperator is provided the elements are seperated with a comma': function() {
+      const originalArray = ["hello", "world"];
+
+      const makeString = join(originalArray);
+
+      eq(makeString, "hello,world");
+    },
+    'if the array provided is an empty array an empty string will be returned': function() {
+      const originalArray = [];
+
+      const makeString = join(originalArray);
+
+      eq(makeString, '');
+    },
+    'if the element of the array is undefined it will return an empty string': function() {
+      const originalArray = [undefined];
+
+      const makeString = join(originalArray);
+
+      eq(makeString, '');
+    },
+    'if the element of the array is null it will return an empty string': function() {
+      const originalArray = [null, "world"];
+
+      const makeString = join(originalArray);
+
+      eq(makeString, ',world');
+    },
+    'it should throw a SyntaxError if an array is not provided as the first argument': function() {
+      let isSytaxError = false;
+      try {
+        join(1)
+      } catch(e) {
+        isSyntaxError = (e instanceof SyntaxError);
+      }
+      eq(isSyntaxError, true);
+    }
+  })
+</script>
