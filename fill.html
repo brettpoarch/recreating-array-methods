@@ -1,0 +1,122 @@
+<script src="simpletest.js"></script>
+<!-- The fill() method changes all elements in an array to a static value, from a start index (default 0) to an end index (default array.length). It returns the modified array. -->
+
+<script>
+  function fill(array, value, optionalStart, optionalEnd) {
+    let start = 0
+    let end = array.length
+
+    if (!Array.isArray(array)) {
+      throw new SyntaxError('Invalid or unexpected token');
+    };
+
+    if (optionalStart) {
+      if (optionalStart < 0){
+        start = array.length + optionalStart;
+      } else {
+        start = optionalStart
+      }
+    }
+
+    if (optionalEnd) {
+      if (optionalEnd < 0) {
+        end = array.length + optionalEnd;
+      } else {
+        end = optionalEnd
+      }
+    }
+    
+    for (let i = start; i < end; i++){
+      array[i] = value
+    }
+
+    return array;
+  };
+
+  tests({
+  	'it should take a value and use it to modify an existing array': function() {
+      array = [1];
+
+      fill(array, 2);
+
+      eq(array[0], 2);
+      eq(array.length, 1)
+  	},
+    'it should take an optionalStart and modify the array from that index': function() {
+      array = [1, 2, 3, 4];
+
+      fill(array, "a", 1);
+
+      eq(array.length, 4);
+      eq(array[0], 1);
+      eq(array[1], "a");
+      eq(array[2], "a");
+      eq(array[3], "a");
+    },
+    'it should start at array[0] if no optionalStart is provided': function() {
+      array = [1, 2, 3, 4];
+
+      fill(array, "a");
+
+      eq(array.length, 4);
+      eq(array[0], "a");
+      eq(array[1], "a");
+      eq(array[2], "a");
+      eq(array[3], "a");    
+    },
+    'it should find the starting index by counting back from array.length, if optionalStart is a negative number': function() {
+      array = [1, 2, 3, 4];
+
+      fill(array, "a", -1);
+
+      eq(array.length, 4);
+      eq(array[0], 1);
+      eq(array[1], 2);
+      eq(array[2], 3);
+      eq(array[3], "a");  
+
+    },
+    'it should take an optionalEnd and modify the array until that index': function() {
+      array = [1, 2, 3, 4];
+
+      fill(array, "a", 1, 3);
+
+      eq(array.length, 4);
+      eq(array[0], 1);
+      eq(array[1], "a");
+      eq(array[2], "a");
+      eq(array[3], 4); 
+    },
+    'it should modify the array.length if no optionalEnd is provided': function() {
+      array = [1, 2, 3, 4];
+
+      fill(array, "a", 2);
+
+      eq(array.length, 4);
+      eq(array[0], 1);
+      eq(array[1], 2);
+      eq(array[2], "a");
+      eq(array[3], "a"); 
+    },
+    'it should find the ending index by counting back from array.length if optionalEnd is a negative number': function() {
+      array = [1, 2, 3, 4];
+
+      fill(array, "a", 1, -1);
+
+      eq(array.length, 4);
+      eq(array[0], 1);
+      eq(array[1], "a");
+      eq(array[2], "a");
+      eq(array[3], 4); 
+    },
+    'it should throw a SyntaxError if an array is not provided as the first argument': function() {
+      let isSytaxError = false;
+      try {
+        fill(1)
+      } catch(e) {
+        isSyntaxError = (e instanceof SyntaxError);
+      }
+      eq(isSyntaxError, true);
+    }
+  })
+</script>
