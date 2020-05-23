@@ -1,102 +1,100 @@
 <script src="simpletest.js"></script>
-<!-- The shift() method removes the first element from an array and returns that removed element. This method changes the length of the array. -->
+<!-- The unshift() method adds one or more elements to the beginning of an array and returns the new length of the array. -->
 
 <script>
-  function shift(array, newElement) {
+  function unshift(array, newElements) {
 
     if (!Array.isArray(array)) {
       throw new SyntaxError('Invalid or unexpected token');
     };
 
     if (arguments.length > 1) {
-      for (let i = 1; i < arguments.length; i++){
+      for (let i = 1; i < arguments.length; i++) {
         if (Array.isArray(arguments[i])) {
           for (let j = 0; j < arguments[i].length; j++) {
+            for (let k = array.length; k > 0; k--) {
+              array[k] = array[k - 1];
+            }
             array[0] = arguments[i][j];
+            }
+          } else {
+          for (let k = array.length; k > 0; k--) {
+            array[k] = array[k - 1];
           }
-        } else {
           array[0] = arguments[i];
         }
       }
     }
-   
-
-
-    return array.length
+    
+    return array.length;
     
   };
 
   tests({
   	'it should append a new element to the beginning of an existing array': function() {
-      let array = [1];
+      let array = [2, 3, 4, 5];
 
-      shift(array, 2)
+      unshift(array, 1)
 
-      eq(array[0], 2) 
+      eq(array.length, 5)
+      eq(array[0], 1) 
   	},
     'it should be able to append multiple elelments to an existing array': function() {
-      fail()
       let array = [1];
 
-      push(array, 2, 3, 4)
+      unshift(array, 2, 3, 4)
 
-      eq(array[3], 4)
+      eq(array[0], 4)
       eq(array.length, 4) 
     },
     'it should return the new length of the array': function() {
-       fail()
       let array = [1];
 
-      const length = push(array, 2)
+      const length = unshift(array, 2)
  
       eq(length, 2)
     },
     'it should return the new length of the array when multiple elements are added': function() {
-       fail()
       let array = [1];
 
-      const length = push(array, 2, 3, 4)
+      const length = unshift(array, 2, 3, 4)
 
       eq(length, 4)
     },
     'it should be able to append a new array to an existing array': function() {
-       fail()
       let array = [1];
 
-      const length = push(array, [2, 3, 4]);
+      const length = unshift(array, [2, 3, 4]);
 
       eq(length, 4);
     },
     'it should be able to append a new array to an existing array as a secondary argument': function() {
-       fail()
       let array = [1];
 
-      const length = push(array, 2, [3, 4], 5);
+      const length = unshift(array, 2, [3, 4], 5);
 
       eq(length, 5);
     },
-    'it should be able to append and object to an array': function() {
-       fail()
+    'it should be able to append an object to an array': function() {
       let array = [1];
 
-      const length = push(array, {a: 1});
+      const length = unshift(array, {a: 1});
 
-      eq(array[1].a, 1)
+      eq(array[0].a, 1)
       eq(length, 2);
     },
     'it should be able to append and object to an array as a secondary argument': function() {
-       fail()
       let array = [1];
 
-      const length = push(array, 2, {a: 1});
+      const length = unshift(array, 2, {a: 1});
 
-      eq(array[2].a, 1)
+      eq(array[0].a, 1)
       eq(length, 3);
     },
     'it should throw a SyntaxError if an array is not provided as the first argument': function() {
       let isSytaxError = false;
       try {
-        push(1)
+        unshift(1)
       } catch(e) {
         isSyntaxError = (e instanceof SyntaxError);
       }
