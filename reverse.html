@@ -1,0 +1,60 @@
+<script src="simpletest.js"></script>
+<!-- The reverse() method reverses an array in place. The first array element becomes the last, and the last array element becomes the first. -->
+
+<script>
+  function reverse(array) {
+    let length = array.length;
+
+    if (!Array.isArray(array)) {
+      throw new SyntaxError('Invalid or unexpected token');
+    };
+
+    for (let i = array.length - 1; i > 0; i--) {
+      array[array.length] = array[i - 1];
+    };
+
+    for (let j = length; j <= array.length; j++) {
+      array[j - length] = array[j - 1];
+    };
+
+    array.length = length;
+
+    return array;
+  };
+
+  tests({
+  	'it should return the array reversed': function() {
+      let array = [1, 2, 3, 4, 5]
+
+      const reversed = reverse(array);
+
+      eq(reversed.length, 5)
+      eq(reversed[0], 5)
+      eq(reversed[1], 4)
+      eq(reversed[2], 3)
+      eq(reversed[3], 2)
+      eq(reversed[4], 1)
+  	},
+    'it should mutate the original array': function() {
+      let array = [1, 2, 3, 4, 5]
+
+      reverse(array);
+
+      eq(array.length, 5)
+      eq(array[0], 5)
+      eq(array[1], 4)
+      eq(array[2], 3)
+      eq(array[3], 2)
+      eq(array[4], 1)
+    },
+    'it should throw a SyntaxError if an array is not provided as the first argument': function() {
+      let isSytaxError = false;
+      try {
+        reverse(1)
+      } catch(e) {
+        isSyntaxError = (e instanceof SyntaxError);
+      }
+      eq(isSyntaxError, true);
+    }
+  })
+</script>
