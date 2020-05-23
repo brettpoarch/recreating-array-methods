@@ -1,0 +1,60 @@
+<script src="simpletest.js"></script>
+<!-- The pop() method removes the last element from an array and returns that element. This method changes the length of the array. -->
+
+<script>
+  function pop(array) {
+    let length = array.length - 1 ;
+    let removed = ''
+
+    if (!Array.isArray(array)) {
+      throw new SyntaxError('Invalid or unexpected token');
+    };
+
+    if (length === -1) {
+      return undefined;
+    }
+
+    removed = array[length];
+
+    array.length = length;
+    // for (let i = array.length; i > 0; i++) {
+    //   array.length = [i - 1];
+    //   return array[i];
+    // }
+    return removed;
+    
+  };
+
+  tests({
+  	'it should remove the last element from an existing array': function() {
+      let array = [1, 2];
+
+      pop(array);
+
+      eq(array.length, 1);
+  	},
+    'it should return the element removed from the array': function() {
+      let array = [1, 2];
+
+      let popped = pop(array);
+
+      eq(popped, 2);
+    },
+    'it should return undefined if array is empty': function() {
+      let array = [];
+
+      const returnUndefined = pop(array);
+ 
+      eq(returnUndefined, undefined);
+    },
+    'it should throw a SyntaxError if an array is not provided as the first argument': function() {
+      let isSytaxError = false;
+      try {
+        pop(1)
+      } catch(e) {
+        isSyntaxError = (e instanceof SyntaxError);
+      }
+      eq(isSyntaxError, true);
+    }
+  })
+</script>
