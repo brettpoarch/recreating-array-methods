@@ -1,0 +1,68 @@
+<script src="simpletest.js"></script>
+<!-- The shift() method removes the first element from an array and returns that removed element. This method changes the length of the array. -->
+
+<script>
+  function shift(array) {
+    let length = array.length - 1 ;
+    let removed = ''
+
+    if (!Array.isArray(array)) {
+      throw new SyntaxError('Invalid or unexpected token');
+    };
+
+    if (length === -1) {
+      return undefined;
+    }
+
+    removed = array[0];
+
+    for (let i = 0; i < array.length; i++) {
+      array[i] = array[i + 1];
+    }
+
+    array.length = length;
+
+    return removed;
+    
+  };
+
+  tests({
+  	'it should remove the first element from an existing array': function() {
+      let array = [1, 2];
+
+      shift(array);
+
+      eq(array.length, 1);
+  	},
+    'it should shift the values at consecutive indexes down': function() {
+      let array = [1, 2, 3, 4, 5];
+
+      shift(array);
+
+      eq(array[0], 2);
+    },
+    'it should return the element removed from the array': function() {
+      let array = [1, 2];
+
+      let popped = shift(array);
+
+      eq(popped, 1);
+    },
+    'it should return undefined if array is empty': function() {
+      let array = [];
+
+      const returnUndefined = shift(array);
+ 
+      eq(returnUndefined, undefined);
+    },
+    'it should throw a SyntaxError if an array is not provided as the first argument': function() {
+      let isSytaxError = false;
+      try {
+        shift(1)
+      } catch(e) {
+        isSyntaxError = (e instanceof SyntaxError);
+      }
+      eq(isSyntaxError, true);
+    }
+  })
+</script>
