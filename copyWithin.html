@@ -1,0 +1,147 @@
+<script src="simpletest.js"></script>
+<!-- The copyWithin() method shallow copies part of an array to another location in the same array and returns it without modifying its length. -->
+
+<script>
+  function copyWithin(array, target, optionalStart, optionalEnd) {
+    let start = 0;
+    let end = array.length
+    const length = array.length
+    let copiedArray = [];
+
+
+    if (!Array.isArray(array)) {
+      throw new SyntaxError('Invalid or unexpected token');
+    };
+
+    if (target < 0) {
+      target = array.length + target;
+    }
+
+    if (target > array.length) {
+      return array
+    }
+
+    if (optionalStart ) {
+      if (optionalStart < 0) {
+        start = array.length + optionalStart;
+      } else { 
+        start = optionalStart;
+      } 
+    };
+
+    if (optionalEnd) {
+      if (optionalEnd < 0) {
+        end = array.length + optionalEnd;
+      } else {
+        end = optionalEnd;
+      }
+    };
+
+    for (let i = start; i < end; i++) {
+      copiedArray[i - start] = array[i];
+
+    }
+
+    for (let j = 0; j < copiedArray.length; j++) {
+      array[target + j] = copiedArray[j];
+    }
+
+    return array.length = length
+  };
+
+  tests({
+  	'it should make a copy of part of an array and copy it to another': function() {
+      let array = [1, 2, 3, 4];
+
+      copyWithin(array, 0, 1, 3);
+
+      eq(array[0], 2);
+      eq(array[1], 3);
+    },
+    'it should take a target as the starting place to insert the copy': function() {
+      let array = [1, 2, 3, 4];
+
+      copyWithin(array, 0, 1, 2);
+
+      eq(array[0], 2);
+    },
+    'if target is negative number it should count from the end of the array': function() {
+      let array = [1, 2, 3, 4];
+
+      copyWithin(array, -1, 1, 2);
+
+      eq(array[3], 2);
+    },
+    'it should not copy anything if target is greater than array.length': function() {
+      let array = [1, 2, 3, 4];
+
+      copyWithin(array, 5, 1, 2);
+
+      eq(array.length, 4);
+      eq(array[0], 1);
+      eq(array[1], 2);
+      eq(array[2], 3);
+      eq(array[3], 4);
+    },
+    'it target is greater than start it should trim the copied result to array.length': function() {
+      let array = [1, 2, 3, 4];
+
+      copyWithin(array, 3, 1, 3);
+
+      eq(array.length, 4);
+    },
+    'it should take a start value to use as the index to start copying the array': function() {
+      let array = [1, 2, 3, 4];
+
+      copyWithin(array, 0, 1, 2);
+
+      eq(array[0], 2);
+    },
+    'if start is a negative number it should count backwards from the end of the array': function() {
+      let array = [1, 2, 3, 4];
+
+      copyWithin(array, 0, -1);
+
+      eq(array[0], 4);
+    },
+    'if start is a not provided it should start copying at array[0]': function() {
+      let array = [1, 2, 3, 4];
+
+      copyWithin(array, 3);
+
+      eq(array[3], 1);
+    },
+    'it should take an end value to use as the index to copy up to but not including': function() {
+      let array = [1, 2, 3, 4];
+
+      copyWithin(array, 0, 1, 2);
+
+      eq(array[0], 2);
+      eq(array[1] === 3, false)
+    },
+    'if end is a negative number it should count backwards from the end of the array': function() {
+      let array = [1, 2, 3, 4];
+
+      copyWithin(array, 1, 2, -1);
+
+      eq(array[1], 3);
+    },
+    'if end is a not provided it should copy through array.length': function() {
+      let array = [1, 2, 3, 4];
+
+      copyWithin(array, 0, 2);
+
+      eq(array[0], 3);
+      eq(array[1], 4)
+    },
+    'it should throw a SyntaxError if an array is not provided as the first argument': function() {
+      let isSytaxError = false;
+      try {
+        copyWithin(1)
+      } catch(e) {
+        isSyntaxError = (e instanceof SyntaxError);
+      }
+      eq(isSyntaxError, true);
+    }
+  })
+</script>
