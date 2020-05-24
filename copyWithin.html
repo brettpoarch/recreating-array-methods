@@ -3,9 +3,9 @@
 
 <script>
   function copyWithin(array, target, optionalStart, optionalEnd) {
-    let start = 0;
-    let end = array.length
     const length = array.length
+    let start = 0;
+    let end = length;
     let copiedArray = [];
 
 
@@ -14,16 +14,16 @@
     };
 
     if (target < 0) {
-      target = array.length + target;
+      target = length + target;
     }
 
-    if (target > array.length) {
+    if (target > length) {
       return array
     }
 
     if (optionalStart ) {
       if (optionalStart < 0) {
-        start = array.length + optionalStart;
+        start = length + optionalStart;
       } else { 
         start = optionalStart;
       } 
@@ -31,7 +31,7 @@
 
     if (optionalEnd) {
       if (optionalEnd < 0) {
-        end = array.length + optionalEnd;
+        end = length + optionalEnd;
       } else {
         end = optionalEnd;
       }
