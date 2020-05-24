@@ -1,0 +1,82 @@
+<script src="simpletest.js"></script>
+<!-- The sort() method sorts the elements of an array in place and returns the sorted array. The default sort order is ascending, built upon converting the elements into strings, then comparing their sequences of UTF-16 code units values.
+
+The time and space complexity of the sort cannot be guaranteed as it depends on the implementation. -->
+
+<script>
+  function sort(array, optionalCallback) {
+
+    if (!Array.isArray(array)) {
+      throw new SyntaxError('Invalid or unexpected token');
+    };
+
+    for (i = 0; i < array.length; i++) {
+      for (j = i + 1; j < array.length; j++) {
+        if (optionalCallback) {
+          if (optionalCallback(array[i], array[j]) > 0) {
+            [array[i], array[j]] = [array[j], array[i]];
+          }
+        } else {
+          if (String(array[i]) > (String(array[j]))) {
+            [array[i], array[j]] = [array[j], array[i]];
+          }
+        }
+      }
+    }
+    return array
+  };
+
+  tests({
+  	'it should sort the elements of an array in place based on the character Unicode value': function() {
+      let array = [4, 3, 2, 100];
+
+      sort(array);
+
+      eq(array[0], 100)
+      eq(array[1], 2)
+      eq(array[2], 3)
+      eq(array[3], 4)
+    },
+    'it should sort in ascending order by default': function() {
+      let array = ["c", "b", "a"];
+
+      sort(array);
+
+      eq(array[0], "a")
+      eq(array[1], "b")
+      eq(array[2], "c")
+    },
+    'it should take an optionalCallback': function() {
+      let array = [3, 2, 1];
+
+      sort(array, function(a, b) {
+        return a - b
+      });
+
+      eq(array[0], 1)
+      eq(array[1], 2)
+      eq(array[2], 3)
+    },
+    'it should sort in descending order if the optionalCallback requires it': function() {
+      let array = [2, 4, 100, 3];
+
+      sort(array, function(a, b) {
+        return b - a;
+      });
+
+      eq(array[0], 100)
+      eq(array[1], 4)
+      eq(array[2], 3)
+      eq(array[3], 2)
+    },
+    'it should throw a SyntaxError if an array is not provided as the first argument': function() {
+      let isSytaxError = false;
+      try {
+        sort(1)
+      } catch(e) {
+        isSyntaxError = (e instanceof SyntaxError);
+      }
+      eq(isSyntaxError, true);
+    }
+  })
+</script>
