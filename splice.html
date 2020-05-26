@@ -1,0 +1,157 @@
+<script src="simpletest.js"></script>
+<!-- The splice() method changes the contents of an array by removing or replacing existing elements and/or adding new elements in place. -->
+
+<script>
+  function splice(array, start, optionalDelete, optionalItems) {
+    const length = array.length;
+    const newItems = arguments.length - 3;
+    let newLength = length + newItems - optionalDelete;
+    let deletedElements = [];
+    let addedElements = [];
+
+    if (!Array.isArray(array)) {
+      throw new SyntaxError('Invalid or unexpected token');
+    };
+
+    if (start > length) {
+      start = length;
+    } else  if (start < 0){
+      start = length + start;
+    };
+
+    if (optionalDelete === undefined) {
+      optionalDelete = array.length - start;
+      newLength = start;
+    } else if (optionalDelete < 0) {
+      optionalDelete = 0;
+      newLength = length + newItems;
+    }
+
+    /* put newItems in an array */
+    if (arguments.length > 3) {
+      for (let grabNewItems = 3; grabNewItems < arguments.length; grabNewItems++) {
+        addedElements[grabNewItems - 3] = arguments[grabNewItems];
+      };
+    };
+
+    /* put deletedItmes in an array */
+    for (let grabDeleted = 0; grabDeleted < optionalDelete; grabDeleted++) {
+      deletedElements.push(array[start + grabDeleted]);
+    }
+
+    /* add array items that go after the new items to the end of addedElements */
+    for (let grabArrayItems = start + optionalDelete; grabArrayItems < array.length; grabArrayItems++) {
+      addedElements.push(array[grabArrayItems]);
+    };
+
+    /* insert addedElements to array at the startIndex */
+    for (let i = start; i < newLength; i++) {
+      for (let j = 0; j < addedElements.length; j++) {
+        array[i] = addedElements[j];
+        i++
+      };
+    };
+
+    /* trim array to the newLength */
+
+    array.length = newLength;
+
+    return deletedElements;
+  };
+
+
+
+  tests({
+    'if start is greater than array.length it should only be able to add items at the end of the array': function() {
+      let array = [1, 2, 3, 4];
+
+      splice(array, 4, 0, 5, 6, 7)
+
+      eq(array.length, 7);
+      eq(array[4], 5);
+    },
+    'if start is a negative number the start index will cound back from array.length': function() {
+      let array = [1, 2, 3, 4];
+
+      splice(array, -1, 0, 5, 6, 7)
+
+      eq(array.length, 7);
+      eq(array[4], 6);
+    },
+    'it should take an optionalDelete value indicating the number of elements to remove': function() {
+      let array = [1, 2, 3, 4];
+
+      splice(array, 1, 2, 5, 6, 7)
+
+      eq(array.length, 5);
+      eq(array[1], 5);
+    },
+    'if optionalDelete is not provided it will remove all elements from the array starting at start index': function() {
+
+      let array = [1, 2, 3, 4];
+
+      splice(array, 2)
+
+      eq(array.length, 2);
+      eq(array[1], 2);
+    },
+    'if optionalDelete is zero or negative no elements will be deleted': function() {
+      let array = [1, 2, 3, 4];
+
+      splice(array, 3, -1, 5, 6, 7)
+
+      eq(array.length, 7);
+      eq(array[4], 6);
+    },
+    'it should take optionalItems to be added to the array starting at the start index': function() {
+      let array = [1, 2, 3, 4];
+
+      splice(array, 2, 0, 5, 6, 7)
+
+      eq(array.length, 7);
+      eq(array[2], 5);
+    },
+    'it should be able to change an array by removing elements': function() {
+      let array = [1, 2, 3, 4];
+
+      splice(array, 1, 1)
+
+      eq(array.length, 3);
+      eq(array[1], 3);
+    },
+    'it should be able to change an array by replacing existing elements': function() {
+      let array = [1, 2, 3, 4];
+
+      splice(array, 1, 1, 9)
+
+      eq(array.length, 4);
+      eq(array[1], 9);
+    },
+    'it should be able to change an array by adding new elements': function() {
+      let array = [1, 2, 3, 4];
+
+      splice(array, 4, 0, 5, 6, 7)
+
+      eq(array.length, 7);
+      eq(array[4], 5);
+    },
+    'it should return and array containing the deleted elements': function() {
+      let array = [1, 2, 3, 4];
+
+      let removedElement = splice(array, 0, 3);
+
+      eq(removedElement.length, 3);
+      eq(removedElement[0], 1);
+    },
+
+    'it should throw a SyntaxError if an array is not provided as the first argument': function() {
+      let isSytaxError = false;
+      try {
+        splice(1)
+      } catch(e) {
+        isSyntaxError = (e instanceof SyntaxError);
+      }
+      eq(isSyntaxError, true);
+    }
+  })
+</script>
